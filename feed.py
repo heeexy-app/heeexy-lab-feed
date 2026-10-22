@@ -114,7 +114,7 @@ def github_items():
             seen.add(full)
             owner, name = repo["full_name"].split("/", 1)
             title = humanize(name)
-            if " " not in title and len(title) < 9:  # "Editor" -> "Pascalorg Editor"
+            if " " not in title and len(title) < 9 and owner.lower() != name.lower():  # "Editor" -> "Pascalorg Editor", but "ollama/ollama" stays "Ollama"
                 title = f"{humanize(owner)} {title}"
             stars = int(repo.get("stargazers_count") or 0)
             topics = ", ".join((repo.get("topics") or [])[:8])
