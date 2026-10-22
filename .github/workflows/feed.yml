@@ -1,0 +1,21 @@
+name: HEEEXY Lab feed
+on:
+  schedule:
+    - cron: "17 6 * * *" # daily
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Send new free AI resources to heeexy.app/lab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LAB_INGEST_SECRET: ${{ secrets.LAB_INGEST_SECRET }}
+        run: python -I feed.py
