@@ -76,7 +76,15 @@ def humanize(name, keep_dots=False):
 def clean_text(text):
     text = re.sub(r"[\U00010000-\U0010FFFF☀-➿️]", "", text or "")
     text = re.sub(r":[a-z0-9_+-]+:", "", text)
-    return re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"\s+", " ", text).strip()
+    # Drop sentences with links or calls to join/follow: they read as spam on a product page.
+    parts = re.split(r"(?<=[.!?])\s+|\s+[|·•]\s+", text)
+    kept = [part for part in parts if part and not PROMO.search(part)]
+    text = " ".join(kept).strip(" -:|,")
+    return text if not text or text.endswith((".", "!", "?")) else text + "."
+
+
+PROMO = re.compile(r"https?://|www\.|discord|join (us|here|our)|follow (us|here)|star (us|this)|subscribe|telegram|wechat|twitter|x\.com", re.I)
 
 
 def mostly_english(text):
